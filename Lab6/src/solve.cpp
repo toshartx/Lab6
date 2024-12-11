@@ -52,13 +52,14 @@ int StringLength(const char *str)
 
 void MaxLength(int &maxLength, int &wordMaxIndex, int &elementMaxIndex, const char *str)
 {
-  for (int i = 0, length = 0, word = 1, symbolIndex = 0, sumOfWordIndex = 0, c = 0; str[i] != '\0'; i += c)
+  for (int i = 0, length = 0, word = 0, symbolIndex = 0, sumOfWordIndex = 0, c = 0; str[i] != '\0'; i += c)
   {
     c = UTFbytes(str[i]);
     ++sumOfWordIndex;
     ++symbolIndex;
     if (str[i] != ' ' && (str[i + c] == ' ' || str[i + c] == '\0'))
     {
+      ++word;
       ++length;
       if (length > maxLength)
       {
@@ -73,7 +74,6 @@ void MaxLength(int &maxLength, int &wordMaxIndex, int &elementMaxIndex, const ch
     {
       sumOfWordIndex = 0;
       length = 0;
-      ++word;
     }
     else
     {
@@ -110,32 +110,23 @@ void AutoFill(int *startIndex, int *endIndex, const char *str, bool **matches, i
   }
 }
 
-void Rec(int *result, int *indexes, bool **copy, int size, int i, int j)
+void Rec(int *result, int *indexes, int &maxCombination, bool **copy, int size, int i, int j)
 {
   static int calls = 0;
-  static int maxCombination = 0;
   for (int k = 0; k < size; ++k)
   {
     copy[k][i] = 0;
   }
   indexes[calls] = i;
-  ++calls;
   for (int i = 0; i < size; ++i)
   {
     if (copy[j][i] == 1)
     {
-      Rec(result, indexes, copy, size, j, i);
+      ++calls;
+      Rec(result, indexes, maxCombination, copy, size, j, i);
     }
   }
-  for (int i = 0; i < size; ++i)
-  {
-    if (indexes[i] == -1)
-    {
-      indexes[i] = j;
-      break;
-    }
-  }
-  ++calls;
+  indexes[++calls] = j;
   if (calls > maxCombination)
   {
     maxCombination = calls;
@@ -176,7 +167,7 @@ void Solve_1(const char *str)
   DeleteString(str);
 }
 
-bool Solve_1(const char *str, int* test)
+bool Solve_1(const char *str, int *test)
 {
   bool testFlag = 1;
   int maxLength = 0;
@@ -192,9 +183,8 @@ bool Solve_1(const char *str, int* test)
       testFlag = 0;
       break;
     }
-  }  
+  }
 
-  DeleteString(str);
   return testFlag;
 }
 
@@ -232,6 +222,7 @@ void Solve_2(const char *str)
   AutoFill(startIndex, endIndex, str, matches, size);
 
   int resultIndexes[size];
+  int maxCombination = 0;
   for (int i = 0; i < size; ++i)
   {
     resultIndexes[i] = -1;
@@ -241,14 +232,24 @@ void Solve_2(const char *str)
   {
     for (int j = 0; j < size; ++j)
     {
+      std::cout << matches[i][j] << " ";
+    }
+    std::cout << '\n';
+  }
+  std::cout << "------------\n";
+
+  for (int i = 0; i < size; ++i)
+  {
+    for (int j = 0; j < size; ++j)
+    {
       if (matches[i][j] == 1)
       {
-        Rec(resultIndexes, indexes, matches, size, i, j);
+        Rec(resultIndexes, indexes, maxCombination, matches, size, i, j);
         AutoFill(startIndex, endIndex, str, matches, size);
       }
     }
   }
-
+  maxCombination = 0;
   std::cout << "Новая строка: ";
   MagicOutput(str, startIndex, endIndex, resultIndexes, size);
   if (resultIndexes[0] == -1)
@@ -268,15 +269,15 @@ void Solve_2(const char *str)
   }
   delete[] matches;
   matches = nullptr;
-  DeleteString(str);
 }
 
-bool Solve_2(const char *str, int* test)
+bool Solve_2(const char *str, int *test)
 {
   bool testFlag = 1;
   int size = numberOfWords(str);
   int endIndex[size];
   int startIndex[size];
+  // Заполняем endIndex и startIndex
   for (int i = 0, c = 0, j = 0; str[i] != '\0'; i += c)
   {
     c = UTFbytes(str[i]);
@@ -291,7 +292,7 @@ bool Solve_2(const char *str, int* test)
       ++j;
     }
   }
-  int indexes[size]; 
+  int indexes[size]; // хранит индексы максимальной комбинации
   for (int i = 0; i < size; ++i)
   {
     indexes[i] = -1;
@@ -304,6 +305,7 @@ bool Solve_2(const char *str, int* test)
   AutoFill(startIndex, endIndex, str, matches, size);
 
   int resultIndexes[size];
+  int maxCombination = 0;
   for (int i = 0; i < size; ++i)
   {
     resultIndexes[i] = -1;
@@ -313,14 +315,24 @@ bool Solve_2(const char *str, int* test)
   {
     for (int j = 0; j < size; ++j)
     {
+      std::cout << matches[i][j] << " ";
+    }
+    std::cout << '\n';
+  }
+  std::cout << "------------\n";
+
+  for (int i = 0; i < size; ++i)
+  {
+    for (int j = 0; j < size; ++j)
+    {
       if (matches[i][j] == 1)
       {
-        Rec(resultIndexes, indexes, matches, size, i, j);
+        Rec(resultIndexes, indexes, maxCombination, matches, size, i, j);
         AutoFill(startIndex, endIndex, str, matches, size);
       }
     }
   }
-
+  maxCombination = 0;
   for (int i = 0; i < size; ++i)
   {
     if (resultIndexes[i] != test[i])
@@ -337,7 +349,6 @@ bool Solve_2(const char *str, int* test)
   }
   delete[] matches;
   matches = nullptr;
-  DeleteString(str);
   return testFlag;
 }
 
@@ -355,19 +366,24 @@ void Solve_3(const char *str)
     }
   }
   std::cout << std::endl;
-  DeleteString(str);
 }
 
 bool Solve_3(const char *str, int sum)
 {
   bool testFlag = 1;
   int ourSum = 0;
-  std::sort((char *)str, (char *)str + StringLength(str));
-  std::cout << "Все символы в строке: ";
-  for (int i = 0, c = 0; str[i] != '\0'; i += c)
+  for (int i = 0; str[i] != '\0'; ++i)
   {
-    c = UTFbytes(str[i]);
-    if (i == 0 || str[i - c] != str[i])
+    bool unequality = 1;
+    for (int j = i; j >= 0; --j)
+    {
+      if (str[i] == str[j] && i != j)
+      {
+        unequality = 0;
+        break;
+      }
+    }
+    if (unequality == 1)
     {
       ourSum += str[i];
     }
@@ -377,13 +393,12 @@ bool Solve_3(const char *str, int sum)
   {
     testFlag = 0;
   }
-  DeleteString(str);
   return testFlag;
 }
 
 void Laba(int task)
 {
-  const char* str = StringInput();
+  const char *str = StringInput();
   if (task == 1)
   {
     Solve_1(str);
@@ -396,4 +411,5 @@ void Laba(int task)
   {
     Solve_3(str);
   }
+  DeleteString(str);
 }

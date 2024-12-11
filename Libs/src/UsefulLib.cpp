@@ -37,6 +37,7 @@ bool Restart()
     std::cin.ignore(1000, '\n');
     std::cout << "Команда не распознана. Повторите попытку:\n";
   }
+  std::cin.ignore();
   return flag;
 }
 
