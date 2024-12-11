@@ -36,8 +36,8 @@ target_link_libraries(main PRIVATE solve)
 
 # Санитайзер
 set(SAN "thread")
-add_compile_options("-fsanitize=${SANITIZER}")
-add_link_options("-fsanitize=${SANITIZER}")
+add_compile_options("-fsanitize=${SAN}")
+add_link_options("-fsanitize=${SAN}")
 
 
 
