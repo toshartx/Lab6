@@ -10,9 +10,6 @@ set(CMAKE_C_COMPILER /usr/bin/gcc)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/executables)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
-set(SANITIZER "thread")
-add_compile_options("-fsanitize=${SANITIZER}")
-add_link_options("-fsanitize=${SANITIZER}")
 
 include_directories(${PROJECT_SOURCE_DIR}/headers)
 include_directories(${PROJECT_SOURCE_DIR}/../Libs/headers)
@@ -37,6 +34,10 @@ target_link_libraries(solve PRIVATE UsefulLib)
 add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE solve)
 
+# Санитайзер
+set(SAN "thread")
+add_compile_options("-fsanitize=${SANITIZER}")
+add_link_options("-fsanitize=${SANITIZER}")
 
 
 
