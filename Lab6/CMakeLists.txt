@@ -10,6 +10,9 @@ set(CMAKE_C_COMPILER /usr/bin/gcc)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/executables)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
+set(SANITIZER "thread")
+add_compile_options("-fsanitize=${SANITIZER}")
+add_link_options("-fsanitize=${SANITIZER}")
 
 include_directories(${PROJECT_SOURCE_DIR}/headers)
 include_directories(${PROJECT_SOURCE_DIR}/../Libs/headers)
@@ -34,11 +37,6 @@ target_link_libraries(solve PRIVATE UsefulLib)
 add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE solve)
 
-# Добавить флаги для отладки
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fsanitize=address -fno-omit-frame-pointer")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=thread -fsanitize=address")
-endif()
 
 
 
