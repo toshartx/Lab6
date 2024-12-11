@@ -14,4 +14,7 @@ void MagicOutput(const char *, int *, int *, int *, int);
 void Solve_1(const char*);
 void Solve_2(const char*);
 void Solve_3(const char*);
+bool Solve_1(const char *str, int* test);
+bool Solve_2(const char *str, int* test);
+bool Solve_3(const char *str, int sum);
 void Laba(int);

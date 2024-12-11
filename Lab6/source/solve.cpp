@@ -176,7 +176,27 @@ void Solve_1(const char *str)
   DeleteString(str);
 }
 
+bool Solve_1(const char *str, int* test)
+{
+  bool testFlag = 1;
+  int maxLength = 0;
+  int wordMaxIndex = 1;
+  int elementMaxIndex = 0;
 
+  MaxLength(maxLength, wordMaxIndex, elementMaxIndex, str);
+  int resultArray[3] = {maxLength, wordMaxIndex, elementMaxIndex};
+  for (int i = 0; i < 3; ++i)
+  {
+    if (resultArray[i] != test[i])
+    {
+      testFlag = 0;
+      break;
+    }
+  }  
+
+  DeleteString(str);
+  return testFlag;
+}
 
 void Solve_2(const char *str)
 {
@@ -251,6 +271,76 @@ void Solve_2(const char *str)
   DeleteString(str);
 }
 
+bool Solve_2(const char *str, int* test)
+{
+  bool testFlag = 1;
+  int size = numberOfWords(str);
+  int endIndex[size];
+  int startIndex[size];
+  for (int i = 0, c = 0, j = 0; str[i] != '\0'; i += c)
+  {
+    c = UTFbytes(str[i]);
+    if ((i == 0 && str[i] != ' ') ||
+        (str[i] != ' ' && str[i - 1] == ' '))
+    {
+      startIndex[j] = i;
+    }
+    if (str[i] != ' ' && (str[i + c] == ' ' || str[i + c] == '\0'))
+    {
+      endIndex[j] = i;
+      ++j;
+    }
+  }
+  int indexes[size]; 
+  for (int i = 0; i < size; ++i)
+  {
+    indexes[i] = -1;
+  }
+
+  bool **matches = new bool *[size];
+  for (int i = 0; i < size; ++i)
+    matches[i] = new bool[size];
+
+  AutoFill(startIndex, endIndex, str, matches, size);
+
+  int resultIndexes[size];
+  for (int i = 0; i < size; ++i)
+  {
+    resultIndexes[i] = -1;
+  }
+
+  for (int i = 0; i < size; ++i)
+  {
+    for (int j = 0; j < size; ++j)
+    {
+      if (matches[i][j] == 1)
+      {
+        Rec(resultIndexes, indexes, matches, size, i, j);
+        AutoFill(startIndex, endIndex, str, matches, size);
+      }
+    }
+  }
+
+  for (int i = 0; i < size; ++i)
+  {
+    if (resultIndexes[i] != test[i])
+    {
+      testFlag = 0;
+      break;
+    }
+  }
+
+  for (int k = 0; k < size; ++k)
+  {
+    delete[] matches[k];
+    matches[k] = nullptr;
+  }
+  delete[] matches;
+  matches = nullptr;
+  DeleteString(str);
+  return testFlag;
+}
+
 void Solve_3(const char *str)
 {
   ContextMenu_3();
@@ -266,6 +356,29 @@ void Solve_3(const char *str)
   }
   std::cout << std::endl;
   DeleteString(str);
+}
+
+bool Solve_3(const char *str, int sum)
+{
+  bool testFlag = 1;
+  int ourSum = 0;
+  std::sort((char *)str, (char *)str + StringLength(str));
+  std::cout << "Все символы в строке: ";
+  for (int i = 0, c = 0; str[i] != '\0'; i += c)
+  {
+    c = UTFbytes(str[i]);
+    if (i == 0 || str[i - c] != str[i])
+    {
+      ourSum += str[i];
+    }
+  }
+
+  if (ourSum != sum)
+  {
+    testFlag = 0;
+  }
+  DeleteString(str);
+  return testFlag;
 }
 
 void Laba(int task)
