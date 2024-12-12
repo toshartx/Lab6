@@ -164,7 +164,6 @@ void Solve_1(const char *str)
   std::cout << "Максимальная длина слова: " << maxLength << '\n';
   std::cout << "Номер слова в тексте: " << wordMaxIndex << '\n';
   std::cout << "Индекс первого элемента этого слова: " << elementMaxIndex << '\n';
-  DeleteString(str);
 }
 
 bool Solve_1(const char *str, int *test)
