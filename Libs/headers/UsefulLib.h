@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include <string.h>
+#include <cstring>
 #include <stdlib.h>
 #include <algorithm>
 int NumberInput();

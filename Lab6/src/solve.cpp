@@ -394,21 +394,25 @@ bool Solve_3(const char *str, int sum)
 
 void Laba(int task)
 {
-  const char *str = StringInput();
   if (task == 1)
   {
     ContextMenu_1();
+    const char *str = StringInput();
     Solve_1(str);
+    DeleteString(str);
   }
   else if (task == 2)
   {
     ContextMenu_2();
+    const char *str = StringInput();
     Solve_2(str);
+    DeleteString(str);
   }
   else if (task == 3)
   {
     ContextMenu_3();
+    const char *str = StringInput();
     Solve_3(str);
+    DeleteString(str);
   }
-  DeleteString(str);
 }
