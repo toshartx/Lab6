@@ -154,7 +154,6 @@ void MagicOutput(const char *str, int *start, int *end, int *maxCombination, int
 
 void Solve_1(const char *str)
 {
-  ContextMenu_1();
   int maxLength = 0;
   int wordMaxIndex = 1;
   int elementMaxIndex = 0;
@@ -189,7 +188,6 @@ bool Solve_1(const char *str, int *test)
 
 void Solve_2(const char *str)
 {
-  ContextMenu_2();
   int size = numberOfWords(str);
   int endIndex[size];
   int startIndex[size];
@@ -353,7 +351,6 @@ bool Solve_2(const char *str, int *test)
 
 void Solve_3(const char *str)
 {
-  ContextMenu_3();
   std::sort((char *)str, (char *)str + StringLength(str));
   std::cout << "Все символы в строке: ";
   for (int i = 0, c = 0; str[i] != '\0'; i += c)
@@ -400,14 +397,17 @@ void Laba(int task)
   const char *str = StringInput();
   if (task == 1)
   {
+    ContextMenu_1();
     Solve_1(str);
   }
   else if (task == 2)
   {
+    ContextMenu_2();
     Solve_2(str);
   }
   else if (task == 3)
   {
+    ContextMenu_3();
     Solve_3(str);
   }
   DeleteString(str);
